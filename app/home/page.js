@@ -33,32 +33,15 @@ export default function Page() {
     const querySubmit = async (e) => {
         if(e.key === "Enter"){
             try{
-                const response = await fetch("/get_embeddings", {
+                const checkCache = await fetch("check_cache", {
                     headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({query: userQuery}),
-                    method: "POST"
-                })
-
-                if(response.ok){
-                    try{
-                        const embeddingVal = await response.value
-                        const checkCache = await fetch("check_cache", {
-                            headers: {
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify({embedding: embeddingVal}),
-                                method: "POST"
-                            }
-                        })
-
-
-                    }catch(error){
-
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({query: userQuery}),
+                        method: "POST"
                     }
-                }
+                })
             }catch(error){
 
             }

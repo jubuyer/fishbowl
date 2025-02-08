@@ -1,18 +1,19 @@
 import { Index } from "@upstash/vector";
 
+export async function POST(request) {
+  const {query} = await request.json()
 
-
-export async function POST(req) {
   const index = new Index({
-    url: "",
-    token: ""
+    url: process.env.UPSTASH_VECTOR_REST_URL,
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN
   })
 
   try{
     const results = await index.query({
-      data: req.body.query,
+      data: query,
       topK: 1
     })
+    console.log(results)
   }catch(e){
     console.error(e)
   }
