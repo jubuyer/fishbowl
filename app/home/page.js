@@ -33,17 +33,17 @@ export default function Page() {
     const querySubmit = async (e) => {
         if(e.key === "Enter"){
             try{
-                const checkCache = await fetch("check_cache", {
+                console.log("in query submit")
+                const checkCache = await fetch("/api/check_cache", {
                     headers: {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({query: userQuery}),
-                        method: "POST"
-                    }
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({query: userQuery}),
+                    method: "POST"
                 })
+                const result = await checkCache.json()
             }catch(error){
-
+                console.log(error)
             }
         }
     }
