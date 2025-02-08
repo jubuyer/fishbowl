@@ -1,7 +1,6 @@
 import { Index } from "@upstash/vector";
 
 export async function POST(request) {
-  console.log("in")
   const {query} = await request.json()
 
   const index = new Index({

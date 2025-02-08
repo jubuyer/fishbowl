@@ -41,7 +41,21 @@ export default function Page() {
                     body: JSON.stringify({query: userQuery}),
                     method: "POST"
                 })
-                const result = await checkCache.json()
+                let data = await checkCache.json()
+                console.log(data.result)
+                if(data.result){
+
+                }else{
+                    const response = await fetch("/api/get_ai_response", {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({message: userQuery}),
+                        method: "POST"
+                    })
+                    data = await response.json()
+                    console.log(data.completion)
+                }
             }catch(error){
                 console.log(error)
             }
