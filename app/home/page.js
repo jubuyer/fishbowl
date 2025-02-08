@@ -2,17 +2,58 @@
 
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { useState } from "react"
 
 export default function Page(){
     const [currentMode, setMode] = useState("Search Mode")
+    const [userQuery, setQuery] = useState("")
 
     const changeMode = () => {
         if(currentMode === "Search Mode"){
             setMode("AI Mode")
         }else{
             setMode("Search Mode")
+        }
+    }
+
+    const changeQuery = (value) => {
+        setQuery(value)
+    }
+
+    const querySubmit = async (e) => {
+        if(e.key === "Enter"){
+            try{
+                const response = await fetch("/get_embeddings", {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({query: userQuery}),
+                    method: "POST"
+                })
+
+                if(response.ok){
+                    try{
+                        const embeddingVal = await response.value
+                        const checkCache = await fetch("check_cache", {
+                            headers: {
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({embedding: embeddingVal}),
+                                method: "POST"
+                            }
+                        })
+
+                        
+                    }catch(error){
+
+                    }
+                }
+            }catch(error){
+
+            }
         }
     }
 
@@ -26,7 +67,12 @@ export default function Page(){
                     alt="coral"
                 />
                 <div className="flex items-center gap-10">
-                    <input type="text" placeholder="Enter a query!" className="w-[50vw] border border-black"></input>
+                    <Input 
+                        onKeyDown={querySubmit} 
+                        onChange = {(e) => changeQuery(e.target.value)}
+                        type="input" 
+                        placeholder="Enter your query" c
+                        lassName="w-[50vw]"/>
                     <div className="flex gap-2 items-center">
                         <Switch
                             onCheckedChange = {changeMode}
