@@ -46,7 +46,7 @@ export default function Page(){
                             }
                         })
 
-                        
+
                     }catch(error){
 
                     }
@@ -71,8 +71,8 @@ export default function Page(){
                         onKeyDown={querySubmit} 
                         onChange = {(e) => changeQuery(e.target.value)}
                         type="input" 
-                        placeholder="Enter your query" c
-                        lassName="w-[50vw]"/>
+                        placeholder="Enter your query"
+                        className="w-[50vw]"/>
                     <div className="flex gap-2 items-center">
                         <Switch
                             onCheckedChange = {changeMode}
