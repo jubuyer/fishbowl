@@ -2,17 +2,66 @@
 
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { useState } from "react"
+import { useUser, RedirectToSignIn } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
-export default function Page(){
+export default function Page() {
+    const { isSignedIn } = useUser(); 
+    const router = useRouter(); 
+
+    if (!isSignedIn) {
+        return <RedirectToSignIn />;
+    }
     const [currentMode, setMode] = useState("Search Mode")
+    const [userQuery, setQuery] = useState("")
 
     const changeMode = () => {
-        if(currentMode === "Search Mode"){
+        if (currentMode === "Search Mode") {
             setMode("AI Mode")
-        }else{
+        } else {
             setMode("Search Mode")
+        }
+    }
+
+    const changeQuery = (value) => {
+        setQuery(value)
+    }
+
+    const querySubmit = async (e) => {
+        if(e.key === "Enter"){
+            try{
+                const response = await fetch("/get_embeddings", {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({query: userQuery}),
+                    method: "POST"
+                })
+
+                if(response.ok){
+                    try{
+                        const embeddingVal = await response.value
+                        const checkCache = await fetch("check_cache", {
+                            headers: {
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({embedding: embeddingVal}),
+                                method: "POST"
+                            }
+                        })
+
+
+                    }catch(error){
+
+                    }
+                }
+            }catch(error){
+
+            }
         }
     }
 
@@ -21,15 +70,20 @@ export default function Page(){
             <div className="flex flex-col items-center gap-10">
                 <Image
                     src="/coral.png"
-                    height= {500}
+                    height={500}
                     width={500}
                     alt="coral"
                 />
                 <div className="flex items-center gap-10">
-                    <input type="text" placeholder="Enter a query!" className="w-[50vw] border border-black"></input>
+                    <Input 
+                        onKeyDown={querySubmit} 
+                        onChange = {(e) => changeQuery(e.target.value)}
+                        type="input" 
+                        placeholder="Enter your query"
+                        className="w-[50vw]"/>
                     <div className="flex gap-2 items-center">
                         <Switch
-                            onCheckedChange = {changeMode}
+                            onCheckedChange={changeMode}
                         />
                         <Label className="w-24">{currentMode}</Label>
                     </div>
