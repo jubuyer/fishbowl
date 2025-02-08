@@ -4,14 +4,22 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import { useState } from "react"
+import { useUser, RedirectToSignIn } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
-export default function Page(){
+export default function Page() {
+    const { isSignedIn } = useUser(); 
+    const router = useRouter(); 
+
+    if (!isSignedIn) {
+        return <RedirectToSignIn />;
+    }
     const [currentMode, setMode] = useState("Search Mode")
 
     const changeMode = () => {
-        if(currentMode === "Search Mode"){
+        if (currentMode === "Search Mode") {
             setMode("AI Mode")
-        }else{
+        } else {
             setMode("Search Mode")
         }
     }
@@ -21,7 +29,7 @@ export default function Page(){
             <div className="flex flex-col items-center gap-10">
                 <Image
                     src="/coral.png"
-                    height= {500}
+                    height={500}
                     width={500}
                     alt="coral"
                 />
@@ -29,7 +37,7 @@ export default function Page(){
                     <input type="text" placeholder="Enter a query!" className="w-[50vw] border border-black"></input>
                     <div className="flex gap-2 items-center">
                         <Switch
-                            onCheckedChange = {changeMode}
+                            onCheckedChange={changeMode}
                         />
                         <Label className="w-24">{currentMode}</Label>
                     </div>
