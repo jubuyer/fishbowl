@@ -14,7 +14,7 @@ export async function POST(request) {
       topK: 1,
       includeMetadata: true,
     });
-    console.log(results);
+    // console.log(results);
     const filteredResults = results.filter((item) => item.score > 0.9);
     return new Response(
       JSON.stringify({
