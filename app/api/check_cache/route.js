@@ -11,10 +11,9 @@ export async function POST(request) {
   try {
     const results = await index.query({
       data: query,
-      topK: 1,
+      topK: 5,
       includeMetadata: true,
     });
-    // console.log(results);
     const filteredResults = results.filter((item) => item.score > 0.9);
     return new Response(
       JSON.stringify({
