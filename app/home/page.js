@@ -14,7 +14,6 @@ import Drag from "@/components/ui/FishMotion.jsx";
 import * as motion from "motion/react-client"
 import { AnimatePresence } from "motion/react"
 
-
 export default function Page() {
     const { isSignedIn } = useUser();
     const { user } = useUser();
@@ -56,10 +55,11 @@ export default function Page() {
 
         if (user && !user.unsafeMetadata?.points) {
             initializeMetadata();
-            console.log("here")
+            console.log("here");
         }
-
     }, []);
+
+
 
     useEffect(() => {
         if (user && user.unsafeMetadata) {
@@ -76,14 +76,15 @@ export default function Page() {
             }
             const loops = Math.floor(Math.max((points / 20), 1));
             const currentFishList = [];
-
             for (let i = 0; i < loops; i++) {
                 currentFishList.push(i % 5);
             }
 
+
             setFishList(currentFishList);
         }
     }, [user]);
+
 
     return (
         <div className="min-h-screen flex flex-col justify-start items-center">
@@ -154,3 +155,4 @@ export default function Page() {
         </div>
     );
 }
+
