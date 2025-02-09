@@ -72,10 +72,13 @@ export default function Page() {
     }, [user]);
 
     return (
-        <div className="min-h-screen flex flex-col justify-start items-center text-white">
-            {fishList.map((fishNum, index) => (
-                <Drag key={index} fishNum={fishNum} />
-            ))}
+        <div className="min-h-screen flex flex-col justify-start items-center">
+            <div className="relative -z-50">
+                {fishList.map((fishNum, index) => (
+                    <Drag key={index} fishNum={fishNum} />
+                ))}
+            </div>
+
             {console.log(fishList)}
             {isSignedIn ? (
                 <div className="flex flex-col items-center gap-10">
