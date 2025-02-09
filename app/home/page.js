@@ -13,8 +13,13 @@ import ChatResponse from "@/components/ui/chatresponse.jsx"
 import Drag from "@/components/ui/FishMotion.jsx"
 
 export default function Page() {
-  const { isSignedIn } = useUser();
-  const router = useRouter();
+    const { isSignedIn } = useUser();
+    const { user } = useUser();
+    const router = useRouter();
+
+    if (user) {
+        console.log(user.unsafeMetadata);
+    }
 
     const [currentMode, setMode] = useState("Search Mode")
     const [response, setResponse] = useState("");
@@ -27,50 +32,71 @@ export default function Page() {
             setMode("Search Mode")
             setShowResponse(false);
         }
-  };
+    };
+    
+
+    useEffect(() => {
+        const initializeMetadata = async () => {
+            try {
+                await user?.update({
+                    unsafeMetadata: {
+                        points: 0,
+                        searchCount: 0
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing metadata:', error);
+            }
+        };
+
+        if (user && !user.unsafeMetadata?.points) {
+            initializeMetadata();
+        }
+    }, []);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-blue-500 to-indigo-900 flex flex-col justify-start items-center text-white">
             <Drag/>
             {isSignedIn ? (
-            <div className="flex flex-col items-center gap-10">
-                <Image
-                    src="/coral.png"
-                    height={500}
-                    width={500}
-                    alt="coral"
-                />
-                <div className="flex items-center gap-10  z-10">
-                    {currentMode === "AI Mode" &&
-                        <AIChatBox 
-                            currentMode={currentMode}
-                            response={response}
-                            showResponse={showResponse}
-                            setResponse={setResponse}
-                            setShowResponse={setShowResponse}
-                        />
-                    }
-                    {currentMode === "Search Mode" &&
-                            <GoogleSearch/>
-                    }
 
-                    <div className="flex gap-2 items-center">
-                        <Switch
-                            onCheckedChange={changeMode}
-                        />
-                        <Label className="w-24">{currentMode}</Label>
-                    </div>
-                </div>
-                {currentMode === "AI Mode" && showResponse && (
-                    <ChatResponse
-                        response={response}
+                <div className="flex flex-col items-center gap-10">
+                    <Image
+                        src="/coral.png"
+                        height={500}
+                        width={500}
+                        alt="coral"
                     />
-                )}
+                    <div className="flex items-center gap-10">
+                        {currentMode === "AI Mode" &&
+                            <AIChatBox
+                                currentMode={currentMode}
+                                response={response}
+                                showResponse={showResponse}
+                                setResponse={setResponse}
+                                setShowResponse={setShowResponse}
+                            />
+                        }
+                        {currentMode === "Search Mode" &&
+                            <GoogleSearch />
+                        }
 
-            </div>
-      ) : (
-        <RedirectToSignIn />
-      )}
-    </div>
-  );
+                        <div className="flex gap-2 items-center">
+                            <Switch
+                                onCheckedChange={changeMode}
+                            />
+                            <Label className="w-24">{currentMode}</Label>
+                        </div>
+                    </div>
+                    {currentMode === "AI Mode" && showResponse && (
+                        <ChatResponse
+                            response={response}
+                        />
+                    )}
+
+                </div>
+            ) : (
+                <RedirectToSignIn />
+            )}
+        </div>
+    );
 }
