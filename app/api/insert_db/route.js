@@ -7,8 +7,14 @@ export default async function POST(request){
     })
 
     try{
-        
-    }catch(error){
 
+    }catch(error){
+        return new Response(
+            JSON.stringify({error: "Error inserting into vector database"}, 
+            {
+                status: 500,
+                headers: {"Content-Type": "application/json"}
+            }
+        ))
     }
 }
