@@ -11,6 +11,9 @@ import GoogleSearch from "@/components/ui/GoogleSearch.jsx";
 import AIChatBox from "@/components/ui/aichat.jsx";
 import ChatResponse from "@/components/ui/chatresponse.jsx";
 import Drag from "@/components/ui/FishMotion.jsx";
+import * as motion from "motion/react-client"
+import { AnimatePresence } from "motion/react"
+
 
 export default function Page() {
     const { isSignedIn } = useUser();
@@ -81,8 +84,19 @@ export default function Page() {
 
             {console.log(fishList)}
             {isSignedIn ? (
-                <div className="flex flex-col items-center gap-10">
-                    <Image src="/coral.png" height={500} width={500} alt="coral" />
+                <div className="flex flex-col justify-center items-center gap-10 h-screen">
+                    <motion.div
+                        animate={{
+                            scale: [1, 1.1, 1]
+                        }}
+                        transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                    >
+                        <Image src={`/${user?.unsafeMetadata.points > 100 ? 'coral' : 'small-coral'}.png`} height={user?.unsafeMetadata.points > 100 ? 500 : 100} width={user?.unsafeMetadata.points > 100 ? 500 : 100} alt="coral" className={`${user?.unsafeMetadata.points < 0 ? "grayscale" : ""}`} />
+                    </motion.div>
                     <div className="flex items-center gap-10">
                         {currentMode === "AI Mode" && (
                             <AIChatBox
@@ -102,15 +116,26 @@ export default function Page() {
                             <Label className="w-24">{currentMode}</Label>
                         </div>
                     </div>
-                    {currentMode === "AI Mode" && showResponse && (
-                        <ChatResponse
-                            userQuery={userQuery}
-                            response={response}
-                            setResponse={setResponse}
-                            showResponse={showResponse}
-                            setShowResponse={setShowResponse}
-                        />
-                    )}
+                    <AnimatePresence
+                        mode = "poplayout"
+                    >
+                        {currentMode === "AI Mode" && showResponse &&
+                        <motion.div
+                            className={`transition-opacity ease-in duration-700`}
+                            initial={{ opacity: 0, scale: 0.5 }} 
+                            exit={{ opacity: 0, scale: 0.5 }}
+                            whileInView={{ opacity: 1, scale: 1 }} 
+                            transition={{duration: 1}}
+                        >
+                            <ChatResponse
+                                userQuery={userQuery}
+                                response={response}
+                                setResponse={setResponse}
+                                showResponse={showResponse}
+                                setShowResponse={setShowResponse}
+                            />
+                        </motion.div>}
+                    </AnimatePresence>
                 </div>
             ) : (
                 <RedirectToSignIn />
