@@ -87,7 +87,7 @@ export default function Page() {
 
     return (
         <div className="min-h-screen flex flex-col justify-start items-center">
-            <div className="absolute w-full h-full z-[-300]" style={{ overflow: "hidden" }}>
+            <div className="absolute w-full h-full z-[100]" style={{ overflow: "hidden" }}>
                 {fishList.map((fishNum, index) => (
                     <Drag key={index} fishNum={fishNum} />
                 ))}
@@ -106,9 +106,9 @@ export default function Page() {
                             ease: "easeInOut"
                         }}
                     >
-                        <Image src={`/${user?.unsafeMetadata.points > 100 ? 'coral' : 'small-coral'}.png`} height={user?.unsafeMetadata.points > 100 ? 500 : 100} width={user?.unsafeMetadata.points > 100 ? 500 : 100} alt="coral" className={`${user?.unsafeMetadata.points < 0 ? "grayscale" : ""}`} />
+                        <Image src={`/${user?.unsafeMetadata.points > 100 ? 'coral' : 'small-coral'}.png`} height={user?.unsafeMetadata.points > 100 ? 500 : 100} width={user?.unsafeMetadata.points > 100 ? 500 : 100} alt="coral" className={`${user?.unsafeMetadata.points < 0 ? "grayscale" : ""}  `} />
                     </motion.div>
-                    <div className="flex items-center gap-10">
+                    <div className="flex items-center gap-10 z-[200]">
                         {currentMode === "AI Mode" && (
                             <AIChatBox
                                 userQuery={userQuery}
@@ -122,30 +122,30 @@ export default function Page() {
                         )}
                         {currentMode === "Search Mode" && <GoogleSearch />}
 
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center z-[200]">
                             <Switch onCheckedChange={changeMode} />
                             <Label className="w-24">{currentMode}</Label>
                         </div>
                     </div>
                     <AnimatePresence
-                        mode = "poplayout"
+                        mode="poplayout"
                     >
                         {currentMode === "AI Mode" && showResponse &&
-                        <motion.div
-                            className={`transition-opacity ease-in duration-700`}
-                            initial={{ opacity: 0, scale: 0.5 }} 
-                            exit={{ opacity: 0, scale: 0.5 }}
-                            whileInView={{ opacity: 1, scale: 1 }} 
-                            transition={{duration: 1}}
-                        >
-                            <ChatResponse
-                                userQuery={userQuery}
-                                response={response}
-                                setResponse={setResponse}
-                                showResponse={showResponse}
-                                setShowResponse={setShowResponse}
-                            />
-                        </motion.div>}
+                            <motion.div
+                                className={`transition-opacity ease-in duration-700`}
+                                initial={{ opacity: 0, scale: 0.5 }}
+                                exit={{ opacity: 0, scale: 0.5 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 1 }}
+                            >
+                                <ChatResponse
+                                    userQuery={userQuery}
+                                    response={response}
+                                    setResponse={setResponse}
+                                    showResponse={showResponse}
+                                    setShowResponse={setShowResponse}
+                                />
+                            </motion.div>}
                     </AnimatePresence>
                 </div>
             ) : (
