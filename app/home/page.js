@@ -10,6 +10,7 @@ import { useEffect } from "react"
 import GoogleSearch from "@/components/ui/GoogleSearch.jsx"
 import AIChatBox from "@/components/ui/aichat.jsx"
 import ChatResponse from "@/components/ui/chatresponse.jsx"
+import Drag from "@/components/ui/FishMotion.jsx"
 
 export default function Page() {
     const { isSignedIn } = useUser();
@@ -54,8 +55,10 @@ export default function Page() {
     }, []);
 
     return (
-        <div className="bg-white h-screen flex justify-center items-center text-black">
+        <div className="min-h-screen bg-gradient-to-b from-blue-500 to-indigo-900 flex flex-col justify-start items-center text-white">
+            <Drag/>
             {isSignedIn ? (
+
                 <div className="flex flex-col items-center gap-10">
                     <Image
                         src="/coral.png"
