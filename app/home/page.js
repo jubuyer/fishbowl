@@ -17,12 +17,9 @@ export default function Page() {
     const { user } = useUser();
     const router = useRouter();
 
-    if (user) {
-        console.log(user.unsafeMetadata);
-    }
-
     const [currentMode, setMode] = useState("Search Mode")
     const [response, setResponse] = useState("");
+    const [fishList, setFishList] = useState([]);
     const [showResponse, setShowResponse] = useState(false);
 
     const changeMode = () => {
@@ -33,7 +30,7 @@ export default function Page() {
             setShowResponse(false);
         }
     };
-    
+
 
     useEffect(() => {
         const initializeMetadata = async () => {
@@ -51,14 +48,32 @@ export default function Page() {
 
         if (user && !user.unsafeMetadata?.points) {
             initializeMetadata();
+            console.log("here")
         }
+
     }, []);
 
-    return (
-        <div className="min-h-screen flex flex-col justify-start items-center text-white">
-            <Drag/>
-            {isSignedIn ? (
+    useEffect(() => {
+        if (user && user.unsafeMetadata) {  
+            const points = user.unsafeMetadata.points || 0; 
+            const loops = Math.floor(points / 20);
+            const currentFishList = [];
 
+            for (let i = 0; i < loops; i++) {
+                currentFishList.push(i % 5);
+            }
+
+            setFishList(currentFishList);
+        }
+    }, [user]);
+
+    return (
+        <div className="min-h-screen flex flex-col justify-start items-center">
+            {fishList.map((fishNum, index) => (
+                <Drag key={index} fishNum={fishNum} />
+            ))}
+            {console.log(fishList)}
+            {isSignedIn ? (
                 <div className="flex flex-col items-center gap-10">
                     <Image
                         src="/coral.png"
