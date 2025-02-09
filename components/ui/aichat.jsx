@@ -4,22 +4,22 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
 const AIChatBox = ({
+  userQuery,
+  setQuery,
   currentMode,
   response,
   showResponse,
   setResponse,
   setShowResponse,
 }) => {
-  const [userQuery, setQuery] = useState("");
-
   const changeQuery = (value) => {
     setQuery(value);
   };
 
   const querySubmit = async (e) => {
     if (e.key === "Enter" && currentMode === "AI Mode") {
-      if(showResponse){
-        setShowResponse(false)
+      if (showResponse) {
+        setShowResponse(false);
       }
       try {
         // console.log("in query submit");
