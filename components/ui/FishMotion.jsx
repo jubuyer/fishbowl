@@ -4,95 +4,115 @@ import { frame, motion, useMotionValue, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 export default function Drag({ fishNum }) {
-    const ref = useRef(null)
-    const { x, y, isFlipped } = useFollowPointer({ ref, fishNum })
-    switch (fishNum) {
-        case 0: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleZero,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/pink-fish.gif"
-                    alt="Second red fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >
-        )
-        case 1: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleOne,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/purple-fish.gif"
-                    alt="Second red fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >
-        )
-        case 2: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleTwo,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/red-fish.gif"
-                    alt="Second red fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >
-        )
-        case 3: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleThree,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/red2-fish.gif"
-                    alt="Second red fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >)
-        case 4: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleFour,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/yellow-fish.gif"
-                    alt="Yellow fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >)
-    }
+  const ref = useRef(null);
+  const { x, y, isFlipped } = useFollowPointer({ ref, fishNum });
+  switch (fishNum) {
+    case 0:
+      return (
+        <motion.div
+          ref={ref}
+          style={{
+            ...fishStyleZero,
+            x,
+            y,
+            transform: isFlipped ? "scaleX(-1)" : "none",
+          }}
+        >
+          <img
+            src="/pink-fish.gif"
+            alt="Second red fish"
+            className={
+              "w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")
+            }
+          />
+        </motion.div>
+      );
+    case 1:
+      return (
+        <motion.div
+          ref={ref}
+          style={{
+            ...fishStyleOne,
+            x,
+            y,
+            transform: isFlipped ? "scaleX(-1)" : "none",
+          }}
+        >
+          <img
+            src="/purple-fish.gif"
+            alt="Second red fish"
+            className={
+              "w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")
+            }
+          />
+        </motion.div>
+      );
+    case 2:
+      return (
+        <motion.div
+          ref={ref}
+          style={{
+            ...fishStyleTwo,
+            x,
+            y,
+            transform: isFlipped ? "scaleX(-1)" : "none",
+          }}
+        >
+          <img
+            src="/red-fish.gif"
+            alt="Second red fish"
+            className={
+              "w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")
+            }
+          />
+        </motion.div>
+      );
+    case 3:
+      return (
+        <motion.div
+          ref={ref}
+          style={{
+            ...fishStyleThree,
+            x,
+            y,
+            transform: isFlipped ? "scaleX(-1)" : "none",
+          }}
+        >
+          <img
+            src="/red2-fish.gif"
+            alt="Second red fish"
+            className={
+              "w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")
+            }
+          />
+        </motion.div>
+      );
+    case 4:
+      return (
+        <motion.div
+          ref={ref}
+          style={{
+            ...fishStyleFour,
+            x,
+            y,
+            transform: isFlipped ? "scaleX(-1)" : "none",
+          }}
+        >
+          <img
+            src="/yellow-fish.gif"
+            alt="Yellow fish"
+            className={
+              "w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")
+            }
+          />
+        </motion.div>
+      );
+  }
 }
 
+export function useFollowPointer({ ref, fishNum }) {
+  const xPoint = useMotionValue(0);
+  const yPoint = useMotionValue(0);
 
 export function useFollowPointer({ref, fishNum}) {
     const xPoint = useMotionValue(0);
@@ -191,29 +211,29 @@ export function useFollowPointer({ref, fishNum}) {
  */
 
 const fishStyleZero = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
+  width: 100,
+  height: 100,
+  position: "absolute",
+};
 
 const fishStyleOne = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
+  width: 100,
+  height: 100,
+  position: "absolute",
+};
 const fishStyleTwo = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
+  width: 100,
+  height: 100,
+  position: "absolute",
+};
 const fishStyleThree = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
+  width: 100,
+  height: 100,
+  position: "absolute",
+};
 
 const fishStyleFour = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
+  width: 100,
+  height: 100,
+  position: "absolute",
+};
