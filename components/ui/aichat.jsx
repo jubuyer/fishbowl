@@ -20,9 +20,7 @@ const AIChatBox = ({
   setResponse,
   setShowResponse,
 }) => {
-  const [userQuery, setQuery] = useState("");
   const [firstQuery, setFirstQuery] = useState(false);
-
 
   const changeQuery = (value) => {
     setQuery(value);
