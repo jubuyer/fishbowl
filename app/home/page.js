@@ -55,7 +55,7 @@ export default function Page() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-500 to-indigo-900 flex flex-col justify-start items-center text-white">
+        <div className="min-h-screen flex flex-col justify-start items-center text-white">
             <Drag/>
             {isSignedIn ? (
 
