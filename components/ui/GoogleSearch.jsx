@@ -22,7 +22,7 @@ const GoogleSearchBox = () => {
     };
   }, []);
 
-  return <div ref={searchContainerRef} className="w-full"></div>;
+  return <div ref={searchContainerRef} className="w-[50vw]"></div>;
 };
 
 export default GoogleSearchBox;

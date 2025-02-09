@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
@@ -12,12 +12,8 @@ import AIChatBox from "@/components/ui/aichat.jsx"
 import ChatResponse from "@/components/ui/chatresponse.jsx"
 
 export default function Page() {
-    const { isSignedIn } = useUser();
-    const router = useRouter();
-
-    if (!isSignedIn) {
-        return <RedirectToSignIn />;
-    }
+  const { isSignedIn } = useUser();
+  const router = useRouter();
 
     const [currentMode, setMode] = useState("Search Mode")
     const [response, setResponse] = useState("");
@@ -30,10 +26,11 @@ export default function Page() {
             setMode("Search Mode")
             setShowResponse(false);
         }
-    }
+  };
 
     return (
         <div className="bg-white h-screen flex justify-center items-center text-black">
+            {isSignedIn ? (
             <div className="flex flex-col items-center gap-10">
                 <Image
                     src="/coral.png"
@@ -69,6 +66,9 @@ export default function Page() {
                 )}
 
             </div>
-        </div>
-    )
+      ) : (
+        <RedirectToSignIn />
+      )}
+    </div>
+  );
 }
