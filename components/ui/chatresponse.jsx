@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { toast } from "sonner";
+import { Toaster, toast } from "sonner";
 
 const ChatResponse = ({
   response,
@@ -21,6 +21,14 @@ const ChatResponse = ({
   const [currentResponse, setCurrentResponse] = useState(response[0]);
 
   const acceptedResponse = () => {
+    toast("Thanks! 🎉", {
+        description:
+          "You accepted a cached response! This means you saved water and electricity and gained 10 points for your reef! 🌍",
+        action: {
+          label: "X",
+          onClick: () => {},
+        },
+      });
     const { searchCount, points } = user.unsafeMetadata;
     user?.update({
       unsafeMetadata: { points: points + 10, searchCount: searchCount + 1 },
@@ -34,7 +42,13 @@ const ChatResponse = ({
       setShowResponse(false);
     }
     toast("Oh no! 😟", {
-      className: "bg-red-500",
+        classNames: {
+            title: 'text-red-950',
+            description: 'text-red-950',
+        },
+        style: {
+            background: '#ff938c'
+          },
       description:
         "You regenerated an existing response. You lost 10 points for this action.",
       action: {
