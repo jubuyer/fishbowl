@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 
 const AIChatBox = ({
+  userQuery,
+  setQuery,
   currentMode,
   response,
   showResponse,
@@ -21,12 +23,16 @@ const AIChatBox = ({
   const [userQuery, setQuery] = useState("");
   const [firstQuery, setFirstQuery] = useState(false);
 
+
   const changeQuery = (value) => {
     setQuery(value);
   };
 
   const querySubmit = async (e) => {
     if (e.key === "Enter" && currentMode === "AI Mode") {
+      if (showResponse) {
+        setShowResponse(false);
+      }
       try {
         const checkCache = await fetch("/api/check_cache", {
           headers: {
@@ -48,7 +54,10 @@ const AIChatBox = ({
             method: "POST",
           });
           data = await response.json();
-          setResponse(data.completion);
+
+          setResponse([data.completion]);
+          //   console.log(data.completion);
+
           const embeddingResponse = await fetch("/api/get_embeddings", {
             headers: {
               "Content-Type": "application/json",
