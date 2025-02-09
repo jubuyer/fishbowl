@@ -62,6 +62,7 @@ export default function Page() {
                 {currentMode === "AI Mode" && showResponse && (
                     <ChatResponse
                         response={response}
+                        setShowResponse={setShowResponse}
                     />
                 )}
 
