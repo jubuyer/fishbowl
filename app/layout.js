@@ -7,7 +7,7 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
-} from '@clerk/nextjs'
+} from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
