@@ -8,10 +8,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 
 const ChatResponse = ({ response, setShowResponse }) => {
+    console.log(response)
     const { user } = useUser()
     const [showButtons, setShowButtons] = useState(true)
     const [currentResponseIndex, setCurrentResponseIndex] = useState(0)
-    const [currentResponse, setCurrentResponse] = useState(responses[0])
+    const [currentResponse, setCurrentResponse] = useState(response[0])
 
     const acceptedResponse = () => {
         const {searchCount , points} = user.unsafeMetadata
@@ -58,16 +59,18 @@ const ChatResponse = ({ response, setShowResponse }) => {
         >
             <div className='flex justify-between gap-5'>
                 {
-                    response.length > 1 &&
+                    response.length > 1 && showButtons &&
                     <Button onClick={prevResponse}>
                         <ChevronLeft/>
                     </Button>
                 }
-                <ReactMarkdown>
-                    {currentResponse}
-                </ReactMarkdown>
+                <div>
+                    <ReactMarkdown>
+                        {currentResponse}
+                    </ReactMarkdown>
+                </div>
                 {
-                    response.length > 1 &&
+                    response.length > 1 && showButtons &&
                     <Button onClick={nextResponse}>
                         <ChevronRight/>
                     </Button>

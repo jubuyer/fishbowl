@@ -18,6 +18,9 @@ const AIChatBox = ({
 
   const querySubmit = async (e) => {
     if (e.key === "Enter" && currentMode === "AI Mode") {
+      if(showResponse){
+        setShowResponse(false)
+      }
       try {
         // console.log("in query submit");
         const checkCache = await fetch("/api/check_cache", {
@@ -40,7 +43,7 @@ const AIChatBox = ({
             method: "POST",
           });
           data = await response.json();
-          setResponse(data.completion);
+          setResponse([data.completion]);
           //   console.log(data.completion);
           const embeddingResponse = await fetch("/api/get_embeddings", {
             headers: {
