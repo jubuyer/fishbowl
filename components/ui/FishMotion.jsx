@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { frame, motion, useMotionValue, useSpring } from "motion/react"
-import { useEffect, useRef, useState } from "react"
+import { frame, motion, useMotionValue, useSpring } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Drag({ fishNum }) {
     const ref = useRef(null)
