@@ -46,6 +46,7 @@ export default function Page() {
                     unsafeMetadata: {
                         points: 0,
                         searchCount: 0,
+                        coralPlanted: 0,
                     },
                 });
             } catch (error) {
@@ -63,7 +64,17 @@ export default function Page() {
     useEffect(() => {
         if (user && user.unsafeMetadata) {
             const points = user.unsafeMetadata.points || 0;
-            const loops = Math.floor(points / 20);
+            const coralPlanted = user.unsafeMetadata.coralPlanted || 0;
+            console.log(coralPlanted)
+            if (points >= 200) {
+                user.update({
+                    unsafeMetadata: {
+                        points: 0,
+                        coralPlanted: coralPlanted + 1,
+                    },
+                })
+            }
+            const loops = Math.floor(Math.max((points / 20), 1));
             const currentFishList = [];
 
             for (let i = 0; i < loops; i++) {
