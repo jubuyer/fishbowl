@@ -29,7 +29,7 @@ export default function Page() {
   };
 
     return (
-        <div className="bg-white h-screen min-h-screen flex flex-col justify-start items-center text-black">
+        <div className="bg-linear-to-t from-sky-500 to-indigo-500 h-screen min-h-screen flex flex-col justify-start items-center text-black">
             {isSignedIn ? (
             <div className="flex flex-col items-center gap-10">
                 <Image
