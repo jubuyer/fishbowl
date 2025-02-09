@@ -12,6 +12,8 @@ const ChatResponse = ({
   showResponse,
   setShowResponse,
   userQuery,
+  regeneratedPenalty,
+  setRegeneratedPenalty,
 }) => {
   //   console.log(response);
   const { user } = useUser();
@@ -66,6 +68,7 @@ const ChatResponse = ({
       unsafeMetadata: { points: points - 10, searchCount: searchCount + 1 },
     });
     // console.log(user?.unsafeMetadata.points);
+    setRegeneratedPenalty(true);
     setShowResponse(true);
   };
 
@@ -120,7 +123,9 @@ const ChatResponse = ({
       </div>
       {showButtons && (
         <div className="flex gap-2 justify-end">
-          <Button onClick={acceptedResponse}>Accept Cached</Button>
+          {!regeneratedPenalty && (
+            <Button onClick={acceptedResponse}>Accept Cached</Button>
+          )}
           <Button onClick={regenerateResponse} variant="destructive">
             Regenerate
           </Button>
