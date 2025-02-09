@@ -30,10 +30,6 @@ export default function Page() {
             setMode("Search Mode")
             setShowResponse(false);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    }
   };
 
     return (
