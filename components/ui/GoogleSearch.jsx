@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useEffect, useRef } from "react";
+import { useUser } from "@clerk/nextjs";
 
 const GoogleSearchBox = () => {
   const searchContainerRef = useRef(null);
@@ -20,11 +20,11 @@ const GoogleSearchBox = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   useEffect(() => {
     const searchStartingCallback = (gname, query) => {
-      console.log('Search started with query:', query);
+      console.log("Search started with query:", query);
       updateSearchPoints();
       return query;
     };
@@ -38,14 +38,17 @@ const GoogleSearchBox = () => {
       },
     };
 
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.src = "https://cse.google.com/cse.js?cx=f0725e85992914228";
     script.async = true;
     document.head.appendChild(script);
 
-    if (searchContainerRef.current && !searchContainerRef.current.querySelector('.gcse-search')) {
-      const searchDiv = document.createElement('div');
-      searchDiv.className = 'gcse-search';
+    if (
+      searchContainerRef.current &&
+      !searchContainerRef.current.querySelector(".gcse-search")
+    ) {
+      const searchDiv = document.createElement("div");
+      searchDiv.className = "gcse-search";
       searchContainerRef.current.appendChild(searchDiv);
     }
 
@@ -54,7 +57,9 @@ const GoogleSearchBox = () => {
     };
   }, []);
 
-  return <div ref={searchContainerRef} className="w-[50vw] rounded-md"></div>;
+  return (
+    <div ref={searchContainerRef} className="z-100 w-[50vw] rounded-md"></div>
+  );
 };
 
 export default GoogleSearchBox;

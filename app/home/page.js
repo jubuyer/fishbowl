@@ -3,23 +3,17 @@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useUser, RedirectToSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import GoogleSearch from "@/components/ui/GoogleSearch.jsx";
-import AIChatBox from "@/components/ui/aichat.jsx";
-import ChatResponse from "@/components/ui/chatresponse.jsx";
-import Drag from "@/components/ui/FishMotion.jsx";
+import GoogleSearch from "@/components/ui/GoogleSearch";
+import AIChatBox from "@/components/ui/aichat";
+import ChatResponse from "@/components/ui/chatresponse";
+import Drag from "@/components/ui/FishMotion";
 
 export default function Page() {
-  const { isSignedIn } = useUser();
-  const { user } = useUser();
+  const { isSignedIn, user } = useUser();
   const router = useRouter();
-
-  //   if (user) {
-  //     console.log(user.unsafeMetadata);
-  //   }
 
   const [currentMode, setMode] = useState("Search Mode");
   const [response, setResponse] = useState("");
@@ -52,14 +46,61 @@ export default function Page() {
     if (user && !user.unsafeMetadata?.points) {
       initializeMetadata();
     }
-  }, []);
+  }, [user]);
+
+  // Determine fish count
+  const rawPoints = user?.unsafeMetadata?.points;
+  const parsedPoints = Number(rawPoints);
+  const validPoints = Number.isFinite(parsedPoints)
+    ? Math.max(0, parsedPoints - 60)
+    : 0;
+  const FISH_COUNT = Math.floor(validPoints / 10);
+
+  // Store fish data in state so it is only generated when FISH_COUNT changes
+  const [fishData, setFishData] = useState([]);
+
+  useEffect(() => {
+    // Create a fresh array of fish with stable random values
+    const newFish = Array.from({ length: FISH_COUNT }, (_, i) => {
+      return {
+        id: i,
+        fishChoice: Math.floor(Math.random() * 5),
+        xOffset: Math.random() * 300,
+        yOffset: Math.random() * 300,
+      };
+    });
+    setFishData(newFish);
+  }, [FISH_COUNT]);
+
+  const pondRef = useRef(null);
 
   return (
     <div className="min-h-screen flex flex-col justify-start items-center text-white">
-      <Drag />
+      <div
+        ref={pondRef}
+        className="absolute w-full h-full z-[-300]"
+        style={{ overflow: "hidden" }}
+      >
+        {fishData.map((fish) => (
+          <Drag
+            key={fish.id}
+            fishChoice={fish.fishChoice}
+            pondRef={pondRef}
+            xOffset={fish.xOffset}
+            yOffset={fish.yOffset}
+          />
+        ))}
+      </div>
+
       {isSignedIn ? (
         <div className="flex flex-col items-center gap-10">
-          <Image src="/coral.png" height={500} width={500} alt="coral" />
+          <Image
+            src="/coral.png"
+            height={500}
+            width={500}
+            alt="coral"
+            className="z-[-400]"
+          />
           <div className="flex items-center gap-10">
             {currentMode === "AI Mode" && (
               <AIChatBox

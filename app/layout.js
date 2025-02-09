@@ -1,4 +1,3 @@
-
 import { Geist, Geist_Mono } from "next/font/google";
 import { Score } from "@/components/ui/Score.jsx";
 import "./globals.css";
@@ -33,7 +32,7 @@ export default function RootLayout({ children }) {
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-blue-500 to-indigo-900 `}
         >
-          <header className="flex justify-end items-center p-4 gap-4 h-16 minecraft">
+          <header className="flex justify-end items-center p-4 gap-4 h-16 minecraft bg-transparent">
             <SignedOut>
               <SignInButton />
               <SignUpButton />
