@@ -58,7 +58,6 @@ export default function Page() {
         <div className="min-h-screen flex flex-col justify-start items-center text-white">
             <Drag/>
             {isSignedIn ? (
-
                 <div className="flex flex-col items-center gap-10">
                     <Image
                         src="/coral.png"
@@ -90,13 +89,13 @@ export default function Page() {
                     {currentMode === "AI Mode" && showResponse && (
                         <ChatResponse
                             response={response}
+                            setShowResponse={setShowResponse}
                         />
                     )}
-
                 </div>
             ) : (
                 <RedirectToSignIn />
             )}
-        </div>
-    );
+    </div>
+  );
 }
