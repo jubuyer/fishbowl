@@ -87,7 +87,7 @@ export default function Page() {
 
     return (
         <div className="min-h-screen flex flex-col justify-start items-center">
-            <div className="absolute w-full h-full z-[100]" style={{ overflow: "hidden" }}>
+            <div className="absolute w-full h-full z-[-300]" style={{ overflow: "hidden" }}>
                 {fishList.map((fishNum, index) => (
                     <Drag key={index} fishNum={fishNum} />
                 ))}
