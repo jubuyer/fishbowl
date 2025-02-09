@@ -1,11 +1,43 @@
-'use client'; 
+'use client';
 
 import { useEffect, useRef } from 'react';
+import { useUser } from '@clerk/nextjs';
 
 const GoogleSearchBox = () => {
   const searchContainerRef = useRef(null);
+  const { user } = useUser();
+
+  const updateSearchPoints = async () => {
+    try {
+      const { searchCount, points } = user.unsafeMetadata;
+
+      await user.update({
+        unsafeMetadata: {
+          searchCount: searchCount + 1,
+          points: points + 10,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
+    const searchStartingCallback = (gname, query) => {
+      console.log('Search started with query:', query);
+      updateSearchPoints();
+      return query;
+    };
+
+    window.__gcse = {
+      ...window.__gcse,
+      searchCallbacks: {
+        web: {
+          starting: searchStartingCallback,
+        },
+      },
+    };
+
     const script = document.createElement('script');
     script.src = "https://cse.google.com/cse.js?cx=f0725e85992914228";
     script.async = true;
@@ -22,7 +54,7 @@ const GoogleSearchBox = () => {
     };
   }, []);
 
-  return <div ref={searchContainerRef} className="w-[50vw]"></div>;
+  return <div ref={searchContainerRef} className="w-[50vw] rounded-md"></div>;
 };
 
 export default GoogleSearchBox;
