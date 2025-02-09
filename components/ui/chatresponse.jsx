@@ -123,7 +123,7 @@ const ChatResponse = ({
     <div>
       <div
         id="responseDiv"
-        className="my-4 p-4 bg-white bg-opacity-25 rounded-lg shadow-lg w-[65vw] border border-gray-200 max-h-[85vh] overflow-y-auto"
+        className="backdrop-blur-lg my-4 p-4 bg-white bg-opacity-25 rounded-lg shadow-lg w-[65vw] border border-gray-200 max-h-[85vh] overflow-y-auto"
       >
         <div className="flex justify-between gap-5">
           {response.length > 1 && showButtons && (
