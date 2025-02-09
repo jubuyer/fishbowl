@@ -59,6 +59,7 @@ export default function Page() {
   // Store fish data in state so it is only generated when FISH_COUNT changes
   const [fishData, setFishData] = useState([]);
   const [regeneratedPenalty, setRegeneratedPenalty] = useState(false);
+  const [userWin, setUserWin] = useState(false);
 
   useEffect(() => {
     // Create a fresh array of fish with stable random values
@@ -130,6 +131,8 @@ export default function Page() {
               setShowResponse={setShowResponse}
               setRegeneratedPenalty={setRegeneratedPenalty}
               regeneratedPenalty={regeneratedPenalty}
+              userWin={userWin}
+              setUserWin={setUserWin}
             />
           )}
         </div>
