@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 
 const ChatResponse = ({
   response,
@@ -32,6 +33,15 @@ const ChatResponse = ({
     if (showResponse) {
       setShowResponse(false);
     }
+    toast("Oh no! 😟", {
+      className: "bg-red-500",
+      description:
+        "You regenerated an existing response. You lost 10 points for this action.",
+      action: {
+        label: "X",
+        onClick: () => {},
+      },
+    });
     // console.log("regenerating");
     const response = await fetch("/api/get_ai_response", {
       headers: {
