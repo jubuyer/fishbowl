@@ -95,8 +95,10 @@ export default function Drag({ fishNum }) {
 
 
 export function useFollowPointer({ref, fishNum}) {
-    const initialX = (Math.random() * window.innerWidth) * (Math.random() < 0.5 ? -1 : 1)
-    const initialY = (Math.random() * window.innerHeight) * (Math.random() < 0.5 ? -1 : 1)
+    const initialX = window.innerWidth/2 + 
+    (Math.random() * window.innerWidth/2 * ((fishNum * .1) + 1)) * (Math.random() < 0.5 ? -1 : 1)
+const initialY = window.innerHeight/2 + 
+    (Math.random() * window.innerHeight/2 * ((fishNum * .1) + 1)) * (Math.random() < 0.5 ? -1 : 1)
     const xPoint = useMotionValue(initialX)
     const yPoint = useMotionValue(initialY)
     
