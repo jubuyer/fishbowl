@@ -19,16 +19,12 @@ export default function Page() {
   const { user } = useUser();
   const router = useRouter();
 
-  //   if (user) {
-  //     console.log(user.unsafeMetadata);
-  //   }
-
   const [currentMode, setMode] = useState("Search Mode");
   const [response, setResponse] = useState("");
   const [fishList, setFishList] = useState([]);
   const [showResponse, setShowResponse] = useState(false);
   const [userQuery, setQuery] = useState("");
-  const [userWin, setUserWin] = useState("");
+  const [userWin, setUserWin] = useState(false);
 
   const changeMode = () => {
     if (currentMode === "Search Mode") {
@@ -66,6 +62,7 @@ export default function Page() {
       const coralPlanted = user.unsafeMetadata.coralPlanted || 0;
       console.log(coralPlanted);
       if (points >= 200) {
+        setUserWin(true);
         user.update({
           unsafeMetadata: {
             points: 0,
@@ -120,7 +117,7 @@ export default function Page() {
               }  `}
             />
           </motion.div>
-          <div className="flex items-center gap-10 z-[200]">
+          <div className="flex items-center gap-10 ">
             {currentMode === "AI Mode" && (
               <AIChatBox
                 userQuery={userQuery}
@@ -134,7 +131,7 @@ export default function Page() {
             )}
             {currentMode === "Search Mode" && <GoogleSearch />}
 
-            <div className="flex gap-2 items-center z-[200]">
+            <div className="flex gap-2 items-center">
               <Switch onCheckedChange={changeMode} />
               <Label className="w-24">{currentMode}</Label>
             </div>
@@ -154,9 +151,9 @@ export default function Page() {
                   setResponse={setResponse}
                   showResponse={showResponse}
                   setShowResponse={setShowResponse}
-                  className="z-[1000]"
                   userWin={userWin}
                   setUserWin={setUserWin}
+                  //   className="z-[1000]"
                 />
               </motion.div>
             )}

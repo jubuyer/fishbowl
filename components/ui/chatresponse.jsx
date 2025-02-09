@@ -132,7 +132,13 @@ const ChatResponse = ({
   );
   return (
     <div>
-      <Dialog open={userWin} onOpenChange={(open) => setUserWin(open)}>
+      <Dialog
+        open={userWin}
+        onOpenChange={(open) => {
+          setUserWin(open);
+        }}
+        className="z-[9999]"
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Congrats 🎉</DialogTitle>
