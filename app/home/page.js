@@ -3,20 +3,29 @@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useUser, RedirectToSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import GoogleSearch from "@/components/ui/GoogleSearch";
-import AIChatBox from "@/components/ui/aichat";
-import ChatResponse from "@/components/ui/chatresponse";
-import Drag from "@/components/ui/FishMotion";
+import { useEffect } from "react";
+import GoogleSearch from "@/components/ui/GoogleSearch.jsx";
+import AIChatBox from "@/components/ui/aichat.jsx";
+import ChatResponse from "@/components/ui/chatresponse.jsx";
+import Drag from "@/components/ui/FishMotion.jsx";
+import * as motion from "motion/react-client";
+import { AnimatePresence } from "motion/react";
 
 export default function Page() {
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser();
+  const { user } = useUser();
   const router = useRouter();
+
+  //   if (user) {
+  //     console.log(user.unsafeMetadata);
+  //   }
 
   const [currentMode, setMode] = useState("Search Mode");
   const [response, setResponse] = useState("");
+  const [fishList, setFishList] = useState([]);
   const [showResponse, setShowResponse] = useState(false);
   const [userQuery, setQuery] = useState("");
 
@@ -36,6 +45,7 @@ export default function Page() {
           unsafeMetadata: {
             points: 0,
             searchCount: 0,
+            coralPlanted: 0,
           },
         });
       } catch (error) {
@@ -45,65 +55,71 @@ export default function Page() {
 
     if (user && !user.unsafeMetadata?.points) {
       initializeMetadata();
+      console.log("here");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user && user.unsafeMetadata) {
+      const points = user.unsafeMetadata.points || 0;
+      const coralPlanted = user.unsafeMetadata.coralPlanted || 0;
+      console.log(coralPlanted);
+      if (points >= 200) {
+        user.update({
+          unsafeMetadata: {
+            points: 0,
+            coralPlanted: coralPlanted + 1,
+          },
+        });
+      }
+      const loops = Math.floor(Math.max(points / 20, 1));
+      const currentFishList = [];
+
+      for (let i = 0; i < loops; i++) {
+        currentFishList.push(i % 5);
+      }
+
+      setFishList(currentFishList);
     }
   }, [user]);
 
-  // Determine fish count
-  const rawPoints = user?.unsafeMetadata?.points;
-  const parsedPoints = Number(rawPoints);
-  const validPoints = Number.isFinite(parsedPoints)
-    ? Math.max(0, parsedPoints - 60)
-    : 0;
-  const FISH_COUNT = Math.floor(validPoints / 10);
-
-  // Store fish data in state so it is only generated when FISH_COUNT changes
-  const [fishData, setFishData] = useState([]);
-  const [regeneratedPenalty, setRegeneratedPenalty] = useState(false);
-  const [userWin, setUserWin] = useState(false);
-
-  useEffect(() => {
-    // Create a fresh array of fish with stable random values
-    const newFish = Array.from({ length: FISH_COUNT }, (_, i) => {
-      return {
-        id: i,
-        fishChoice: Math.floor(Math.random() * 5),
-        xOffset: Math.random() * 300,
-        yOffset: Math.random() * 300,
-      };
-    });
-    setFishData(newFish);
-  }, [FISH_COUNT]);
-
-  const pondRef = useRef(null);
-
   return (
-    <div className="min-h-screen flex flex-col justify-start items-center text-white">
+    <div className="min-h-screen flex flex-col justify-start items-center">
       <div
-        ref={pondRef}
-        className="absolute w-full h-full z-[-300]"
+        className="absolute w-full h-full z-[100]"
         style={{ overflow: "hidden" }}
       >
-        {fishData.map((fish) => (
-          <Drag
-            key={fish.id}
-            fishChoice={fish.fishChoice}
-            pondRef={pondRef}
-            xOffset={fish.xOffset}
-            yOffset={fish.yOffset}
-          />
+        {fishList.map((fishNum, index) => (
+          <Drag key={index} fishNum={fishNum} />
         ))}
       </div>
 
+      {console.log(fishList)}
       {isSignedIn ? (
-        <div className="flex flex-col items-center gap-10">
-          <Image
-            src="/coral.png"
-            height={500}
-            width={500}
-            alt="coral"
-            className="z-[-400]"
-          />
-          <div className="flex items-center gap-10">
+        <div className="flex flex-col justify-center items-center gap-10 h-screen">
+          <motion.div
+            animate={{
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <Image
+              src={`/${
+                user?.unsafeMetadata.points > 100 ? "coral" : "small-coral"
+              }.png`}
+              height={user?.unsafeMetadata.points > 100 ? 500 : 100}
+              width={user?.unsafeMetadata.points > 100 ? 500 : 100}
+              alt="coral"
+              className={`${
+                user?.unsafeMetadata.points < 0 ? "grayscale" : ""
+              }  `}
+            />
+          </motion.div>
+          <div className="flex items-center gap-10 z-[200]">
             {currentMode === "AI Mode" && (
               <AIChatBox
                 userQuery={userQuery}
@@ -117,24 +133,30 @@ export default function Page() {
             )}
             {currentMode === "Search Mode" && <GoogleSearch />}
 
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center z-[200]">
               <Switch onCheckedChange={changeMode} />
               <Label className="w-24">{currentMode}</Label>
             </div>
           </div>
-          {currentMode === "AI Mode" && showResponse && (
-            <ChatResponse
-              userQuery={userQuery}
-              response={response}
-              setResponse={setResponse}
-              showResponse={showResponse}
-              setShowResponse={setShowResponse}
-              setRegeneratedPenalty={setRegeneratedPenalty}
-              regeneratedPenalty={regeneratedPenalty}
-              userWin={userWin}
-              setUserWin={setUserWin}
-            />
-          )}
+          <AnimatePresence mode="poplayout">
+            {currentMode === "AI Mode" && showResponse && (
+              <motion.div
+                className={`transition-opacity ease-in duration-700`}
+                initial={{ opacity: 0, scale: 0.5 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1 }}
+              >
+                <ChatResponse
+                  userQuery={userQuery}
+                  response={response}
+                  setResponse={setResponse}
+                  showResponse={showResponse}
+                  setShowResponse={setShowResponse}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       ) : (
         <RedirectToSignIn />
