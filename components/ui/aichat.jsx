@@ -120,7 +120,7 @@ const AIChatBox = ({
         onChange={(e) => changeQuery(e.target.value)}
         type="input"
         placeholder="Enter your query"
-        className="w-[50vw] backdrop-blur-lg"
+        className="w-[50vw] backdrop-blur-lg text-white"
       />
     </div>
   );
