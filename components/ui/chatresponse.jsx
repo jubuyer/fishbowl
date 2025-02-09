@@ -6,6 +6,15 @@ import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Toaster, toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const ChatResponse = ({
   response,
@@ -13,6 +22,8 @@ const ChatResponse = ({
   showResponse,
   setShowResponse,
   userQuery,
+  userWin,
+  setUserWin,
 }) => {
   //   console.log(response);
   const { user } = useUser();
@@ -22,13 +33,13 @@ const ChatResponse = ({
 
   const acceptedResponse = () => {
     toast("Thanks! 🎉", {
-        description:
-          "You accepted a cached response! This means you saved water and electricity and gained 10 points for your reef! 🌍",
-        action: {
-          label: "X",
-          onClick: () => {},
-        },
-      });
+      description:
+        "You accepted a cached response! This means you saved water and electricity and gained 10 points for your reef! 🌍",
+      action: {
+        label: "X",
+        onClick: () => {},
+      },
+    });
     const { searchCount, points } = user.unsafeMetadata;
     user?.update({
       unsafeMetadata: { points: points + 10, searchCount: searchCount + 1 },
@@ -42,13 +53,13 @@ const ChatResponse = ({
       setShowResponse(false);
     }
     toast("Oh no! 😟", {
-        classNames: {
-            title: 'text-red-950',
-            description: 'text-red-950',
-        },
-        style: {
-            background: '#ff938c'
-          },
+      classNames: {
+        title: "text-red-950",
+        description: "text-red-950",
+      },
+      style: {
+        background: "#ff938c",
+      },
       description:
         "You regenerated an existing response. You lost 10 points for this action.",
       action: {
@@ -121,6 +132,24 @@ const ChatResponse = ({
   );
   return (
     <div>
+      <Dialog open={userWin} onOpenChange={(open) => setUserWin(open)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Congrats 🎉</DialogTitle>
+            <DialogDescription>
+              You've reached 200 points! In your honor we've donated to the
+              coral reef alliance! Your coral and points have been reset,
+              continue searching efficiently!
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <Button type="submit" onClick={() => setUserWin(false)}>
+              Save the ocean 🌊
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div
         id="responseDiv"
         className="backdrop-blur-lg my-4 p-4 bg-white bg-opacity-25 rounded-lg shadow-lg w-[65vw] border border-gray-200 max-h-[85vh] overflow-y-auto"
