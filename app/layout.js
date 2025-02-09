@@ -1,4 +1,6 @@
+
 import { Geist, Geist_Mono } from "next/font/google";
+import { Score } from "@/components/ui/Score.jsx";
 import "./globals.css";
 import {
   ClerkProvider,
@@ -31,12 +33,13 @@ export default function RootLayout({ children }) {
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
+          <header className="flex justify-end items-center p-4 gap-4 h-16 bg-yellow-200">
             <SignedOut>
               <SignInButton />
               <SignUpButton />
             </SignedOut>
             <SignedIn>
+              <Score />
               <UserButton />
             </SignedIn>
           </header>
