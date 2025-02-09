@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Score } from "@/components/ui/Score.jsx";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import {
   ClerkProvider,
@@ -43,6 +44,7 @@ export default function RootLayout({ children }) {
             </SignedIn>
           </header>
           {children}
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

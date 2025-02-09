@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Toaster, toast } from "sonner";
 
 const ChatResponse = ({
   response,
@@ -22,6 +23,14 @@ const ChatResponse = ({
   const [currentResponse, setCurrentResponse] = useState(response[0]);
 
   const acceptedResponse = () => {
+    toast("Thanks! 🎉", {
+        description:
+          "You accepted a cached response! This means you saved water and electricity and gained 10 points for your reef! 🌍",
+        action: {
+          label: "X",
+          onClick: () => {},
+        },
+      });
     const { searchCount, points } = user.unsafeMetadata;
     user?.update({
       unsafeMetadata: { points: points + 10, searchCount: searchCount + 1 },
@@ -34,6 +43,21 @@ const ChatResponse = ({
     if (showResponse) {
       setShowResponse(false);
     }
+    toast("Oh no! 😟", {
+        classNames: {
+            title: 'text-red-950',
+            description: 'text-red-950',
+        },
+        style: {
+            background: '#ff938c'
+          },
+      description:
+        "You regenerated an existing response. You lost 10 points for this action.",
+      action: {
+        label: "X",
+        onClick: () => {},
+      },
+    });
     // console.log("regenerating");
     const response = await fetch("/api/get_ai_response", {
       headers: {

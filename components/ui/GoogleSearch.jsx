@@ -57,9 +57,11 @@ const GoogleSearchBox = () => {
     };
   }, []);
 
+
   return (
-    <div ref={searchContainerRef} className="z-100 w-[50vw] rounded-md"></div>
+    <div ref={searchContainerRef} className="z-100 w-[50vw] rounded-md text-black"></div>
   );
+
 };
 
 export default GoogleSearchBox;

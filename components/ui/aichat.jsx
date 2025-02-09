@@ -2,14 +2,15 @@
 
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { toast } from "sonner";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "@/components/ui/dialog";
 
 const AIChatBox = ({
   userQuery,
@@ -44,6 +45,14 @@ const AIChatBox = ({
           setResponse(data.response[0].metadata.response);
         } else {
           setFirstQuery(true);
+          toast("Congrats! 🎉", {
+            description:
+              "This is a brand new query to us! This means you will save water and electricity for every person who asks this question in the future! 🌍",
+            action: {
+              label: "X",
+              onClick: () => {},
+            },
+          });
           const response = await fetch("/api/get_ai_response", {
             headers: {
               "Content-Type": "application/json",
@@ -89,9 +98,7 @@ const AIChatBox = ({
 
   return (
     <div>
-      {/* <button onClick={() => setFirstQuery(true)}>Open</button> */}
-      <Dialog open={firstQuery} onOpenChange={(open) => setFirstQuery(open)}>
-        {/* <DialogTrigger>Open</DialogTrigger> */}
+      {/* <Dialog open={firstQuery} onOpenChange={(open) => setFirstQuery(open)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="font-black text-2xl">
@@ -106,7 +113,8 @@ const AIChatBox = ({
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+
       <Input
         onKeyDown={querySubmit}
         onChange={(e) => changeQuery(e.target.value)}
