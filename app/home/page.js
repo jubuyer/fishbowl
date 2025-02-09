@@ -2,13 +2,14 @@
 
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { useState } from "react"
 import { useUser, RedirectToSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from "react"
 import GoogleSearch from "@/components/ui/GoogleSearch.jsx"
+import AIChatBox from "@/components/ui/aichat.jsx"
+import ChatResponse from "@/components/ui/chatresponse.jsx"
 
 export default function Page() {
     const { isSignedIn } = useUser();
@@ -18,50 +19,16 @@ export default function Page() {
         return <RedirectToSignIn />;
     }
 
-
     const [currentMode, setMode] = useState("Search Mode")
-    const [userQuery, setQuery] = useState("")
+    const [response, setResponse] = useState("");
+    const [showResponse, setShowResponse] = useState(false);
 
     const changeMode = () => {
         if (currentMode === "Search Mode") {
             setMode("AI Mode")
         } else {
             setMode("Search Mode")
-        }
-    }
-
-    const changeQuery = (value) => {
-        setQuery(value)
-    }
-
-    const querySubmit = async (e) => {
-        if(e.key === "Enter"){
-            try{
-                console.log("in query submit")
-                const checkCache = await fetch("/api/check_cache", {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ query: userQuery }),
-                    method: "POST"
-                })
-                let data = await checkCache.json()
-                console.log(data.result)
-                if(data.result){
-                }else{
-                    const response = await fetch("/api/get_ai_response", {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({message: userQuery}),
-                        method: "POST"
-                    })
-                    data = await response.json()
-                    console.log(data.completion)
-                }
-            }catch(error){
-                console.log(error)
-            }
+            setShowResponse(false);
         }
     }
 
@@ -76,12 +43,13 @@ export default function Page() {
                 />
                 <div className="flex items-center gap-10">
                     {currentMode === "AI Mode" &&
-                        <Input
-                            onKeyDown={querySubmit}
-                            onChange={(e) => changeQuery(e.target.value)}
-                            type="input"
-                            placeholder="Enter your query"
-                            className="w-[50vw]" />
+                        <AIChatBox 
+                            currentMode={currentMode}
+                            response={response}
+                            showResponse={showResponse}
+                            setResponse={setResponse}
+                            setShowResponse={setShowResponse}
+                        />
                     }
                     {currentMode === "Search Mode" &&
                             <GoogleSearch/>
@@ -94,6 +62,12 @@ export default function Page() {
                         <Label className="w-24">{currentMode}</Label>
                     </div>
                 </div>
+                {currentMode === "AI Mode" && showResponse && (
+                    <ChatResponse
+                        response={response}
+                    />
+                )}
+
             </div>
         </div>
     )
