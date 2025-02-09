@@ -95,23 +95,14 @@ export default function Drag({ fishNum }) {
 
 
 export function useFollowPointer({ref, fishNum}) {
-    const initialX = window.innerWidth/2 + 
-    (Math.random() * window.innerWidth/2 * ((fishNum * .1) + 1)) * (Math.random() < 0.5 ? -1 : 1)
-const initialY = window.innerHeight/2 + 
-    (Math.random() * window.innerHeight/2 * ((fishNum * .1) + 1)) * (Math.random() < 0.5 ? -1 : 1)
-    const xPoint = useMotionValue(initialX)
-    const yPoint = useMotionValue(initialY)
+    const xPoint = useMotionValue(0);
+    const yPoint = useMotionValue(0);
     
     const fishParams = useRef({
-        speed: Math.random() * 0.1,
-        amplitude: 500,    
-        verticalRange: 2,
-        offset: -100,
-        center: 100,  
         spring: {
-            damping: 20 + Math.random() * 20,
-            stiffness: 5 + Math.random() * 15,
-            restDelta: 1
+            damping: 20 + 30 * Math.random(),
+            stiffness: 10 + 15 * Math.random(),
+            restDelta: 0.001
         }
     }).current;
 
@@ -119,39 +110,79 @@ const initialY = window.innerHeight/2 +
     const y = useSpring(yPoint, fishParams.spring)
     
     const [isFlipped, setIsFlipped] = useState(false)
+    const intervalRef = useRef(null);
+
+    function moveToRandomPoint() {
+        if (!ref.current) return;
+        
+        const fishEl = ref.current;
+        const fishWidth = fishEl.offsetWidth;
+        const fishHeight = fishEl.offsetHeight;
+        const maxX = window.innerWidth - fishWidth;
+        const maxY = window.innerHeight - fishHeight;
+
+        const randX = Math.random() * (maxX > 0 ? maxX : 0);
+        const randY = Math.random() * (maxY > 0 ? maxY : 0);
+        
+        const currentX = x.get();
+        setIsFlipped(randX > currentX);
+        
+        xPoint.set(randX);
+        yPoint.set(randY);
+    }
 
     useEffect(() => {
-        if (!ref.current) return
-
-        let lastX = initialX;
-        
-        const swim = () => {
-            const time = Date.now() * 0.001 * fishParams.speed;
-            
-            // Calculate new position with fish's own center point
-            const newX = Math.sin(time + fishParams.offset) * fishParams.amplitude + fishParams.center;
-            const newY = Math.cos(time * 0.5) * fishParams.verticalRange + initialY;
-            
-            // Update position
-            xPoint.set(newX);
-            yPoint.set(newY);
-            
-            // Update flip based on movement direction
-            if (newX < lastX) {
-                setIsFlipped(true);
-            } else {
-                setIsFlipped(false);
-            }
-            
-            lastX = newX;
-            
-            requestAnimationFrame(swim);
-        };
-
-        const animation = requestAnimationFrame(swim);
-        
-        return () => cancelAnimationFrame(animation);
+        if (ref.current) {
+            const maxX = window.innerWidth - 100; 
+            const maxY = window.innerHeight - 100; 
+            xPoint.set(Math.random() * maxX);
+            yPoint.set(Math.random() * maxY);
+        }
     }, []);
+
+    useEffect(() => {
+        moveToRandomPoint();
+        intervalRef.current = setInterval(moveToRandomPoint, 4000);
+        
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!ref.current) return;
+
+        const fishEl = ref.current;
+        const fishWidth = fishEl.offsetWidth;
+        const fishHeight = fishEl.offsetHeight;
+        const maxX = window.innerWidth - fishWidth;
+        const maxY = window.innerHeight - fishHeight;
+
+        const unsubX = x.onChange((latestX) => {
+            if (latestX < 0) {
+                x.set(0);
+                xPoint.set(0);
+            } else if (latestX > maxX) {
+                x.set(maxX);
+                xPoint.set(maxX);
+            }
+        });
+
+        const unsubY = y.onChange((latestY) => {
+            if (latestY < 0) {
+                y.set(0);
+                yPoint.set(0);
+            } else if (latestY > maxY) {
+                y.set(maxY);
+                yPoint.set(maxY);
+            }
+        });
+
+        return () => {
+            unsubX();
+            unsubY();
+        };
+    }, [x, y, xPoint, yPoint]);
 
     return { x, y, isFlipped }
 }
