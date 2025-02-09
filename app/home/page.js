@@ -85,7 +85,7 @@ export default function Page() {
             {console.log(fishList)}
             {isSignedIn ? (
                 <div className="flex flex-col justify-center items-center gap-10 h-screen">
-                    <Image src={`/${user?.unsafeMetadata.points > 100 ? 'coral' : 'small-coral'}.png`} height={user?.unsafeMetadata.points > 100 ? 500 : 100} width={user?.unsafeMetadata.points > 100 ? 500 : 100} alt="coral" />
+                    <Image src={`/${user?.unsafeMetadata.points > 100 ? 'coral' : 'small-coral'}.png`} height={user?.unsafeMetadata.points > 100 ? 500 : 100} width={user?.unsafeMetadata.points > 100 ? 500 : 100} alt="coral" className={`${user?.unsafeMetadata.points < 0 ? "grayscale" : ""}`} />
                     <div className="flex items-center gap-10">
                         {currentMode === "AI Mode" && (
                             <AIChatBox
