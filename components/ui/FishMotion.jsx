@@ -109,11 +109,6 @@ export default function Drag({ fishNum }) {
       );
   }
 }
-
-export function useFollowPointer({ ref, fishNum }) {
-  const xPoint = useMotionValue(0);
-  const yPoint = useMotionValue(0);
-
 export function useFollowPointer({ref, fishNum}) {
     const xPoint = useMotionValue(0);
     const yPoint = useMotionValue(0);

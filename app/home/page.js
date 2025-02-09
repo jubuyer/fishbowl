@@ -15,28 +15,28 @@ import * as motion from "motion/react-client"
 import { AnimatePresence } from "motion/react"
 
 export default function Page() {
-  const { isSignedIn } = useUser();
-  const { user } = useUser();
-  const router = useRouter();
+    const { isSignedIn } = useUser();
+    const { user } = useUser();
+    const router = useRouter();
 
-  //   if (user) {
-  //     console.log(user.unsafeMetadata);
-  //   }
+    //   if (user) {
+    //     console.log(user.unsafeMetadata);
+    //   }
 
-  const [currentMode, setMode] = useState("Search Mode");
-  const [response, setResponse] = useState("");
-  const [fishList, setFishList] = useState([]);
-  const [showResponse, setShowResponse] = useState(false);
-  const [userQuery, setQuery] = useState("");
+    const [currentMode, setMode] = useState("Search Mode");
+    const [response, setResponse] = useState("");
+    const [fishList, setFishList] = useState([]);
+    const [showResponse, setShowResponse] = useState(false);
+    const [userQuery, setQuery] = useState("");
 
-  const changeMode = () => {
-    if (currentMode === "Search Mode") {
-      setMode("AI Mode");
-    } else {
-      setMode("Search Mode");
-      setShowResponse(false);
-    }
-  };
+    const changeMode = () => {
+        if (currentMode === "Search Mode") {
+            setMode("AI Mode");
+        } else {
+            setMode("Search Mode");
+            setShowResponse(false);
+        }
+    };
 
     useEffect(() => {
         const initializeMetadata = async () => {
@@ -53,27 +53,13 @@ export default function Page() {
             }
         };
 
-    if (user && !user.unsafeMetadata?.points) {
-      initializeMetadata();
-      console.log("here");
-    }
-  }, []);
+        if (user && !user.unsafeMetadata?.points) {
+            initializeMetadata();
+            console.log("here");
+        }
+    }, []);
 
-  useEffect(() => {
-    if (user && user.unsafeMetadata) {
-      const points = user.unsafeMetadata.points || 0;
-      const coralPlanted = user.unsafeMetadata.coralPlanted || 0;
-      console.log(coralPlanted);
-      if (points >= 200) {
-        user.update({
-          unsafeMetadata: {
-            points: 0,
-            coralPlanted: coralPlanted + 1,
-          },
-        });
-      }
-      const loops = Math.floor(Math.max(points / 20, 1));
-      const currentFishList = [];
+
 
     useEffect(() => {
         if (user && user.unsafeMetadata) {
@@ -90,29 +76,19 @@ export default function Page() {
             }
             const loops = Math.floor(Math.max((points / 20), 1));
             const currentFishList = [];
-      for (let i = 0; i < loops; i++) {
-        currentFishList.push(i % 5);
-      }
+            for (let i = 0; i < loops; i++) {
+                currentFishList.push(i % 5);
+            }
 
 
-      setFishList(currentFishList);
-    }
-  }, [user]);
+            setFishList(currentFishList);
+        }
+    }, [user]);
 
-  return (
-    <div className="min-h-screen flex flex-col justify-start items-center">
-      <div
-        className="absolute w-full h-full z-[100]"
-        style={{ overflow: "hidden" }}
-      >
-        {fishList.map((fishNum, index) => (
-          <Drag key={index} fishNum={fishNum} />
-        ))}
-      </div>
 
     return (
         <div className="min-h-screen flex flex-col justify-start items-center">
-            <div className="absolute w-full h-full z-[100]" style={{ overflow: "hidden" }}>
+            <div className="absolute w-full h-full z-[-300]" style={{ overflow: "hidden" }}>
                 {fishList.map((fishNum, index) => (
                     <Drag key={index} fishNum={fishNum} />
                 ))}
@@ -175,7 +151,8 @@ export default function Page() {
                 </div>
             ) : (
                 <RedirectToSignIn />
-      )}
-    </div>
-  );
+            )}
+        </div>
+    );
 }
+
