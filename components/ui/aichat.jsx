@@ -40,7 +40,10 @@ const AIChatBox = ({ currentMode, response, showResponse, setResponse, setShowRe
                 }
                 setShowResponse(true)
                 setTimeout(() => {
-                    document.getElementById("responseDiv").scrollIntoView({ behavior: "smooth" });
+                    const responseDiv = document.getElementById("responseDiv");
+                    if (responseDiv) {
+                        responseDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
                 }, 100);
 
             }catch(error){
