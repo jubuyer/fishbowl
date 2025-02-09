@@ -15,10 +15,6 @@ export default function Page() {
   const { isSignedIn } = useUser();
   const router = useRouter();
 
-    if (!isSignedIn) {
-        return <RedirectToSignIn />;
-    }
-
     const [currentMode, setMode] = useState("Search Mode")
     const [response, setResponse] = useState("");
     const [showResponse, setShowResponse] = useState(false);
@@ -30,14 +26,11 @@ export default function Page() {
             setMode("Search Mode")
             setShowResponse(false);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    }
   };
 
     return (
         <div className="bg-white h-screen flex justify-center items-center text-black">
+            {isSignedIn ? (
             <div className="flex flex-col items-center gap-10">
                 <Image
                     src="/coral.png"
@@ -73,8 +66,6 @@ export default function Page() {
                 )}
 
             </div>
-          </div>
-        </div>
       ) : (
         <RedirectToSignIn />
       )}
