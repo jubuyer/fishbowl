@@ -3,184 +3,158 @@
 import { frame, motion, useMotionValue, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-export default function Drag({ fishNum }) {
-    const ref = useRef(null)
-    const { x, y, isFlipped } = useFollowPointer({ ref, fishNum })
-    switch (fishNum) {
-        case 0: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleZero,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/pink-fish.gif"
-                    alt="Second red fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >
-        )
-        case 1: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleOne,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/purple-fish.gif"
-                    alt="Second red fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >
-        )
-        case 2: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleTwo,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/red-fish.gif"
-                    alt="Second red fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >
-        )
-        case 3: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleThree,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/red2-fish.gif"
-                    alt="Second red fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >)
-        case 4: return (
-            <motion.div
-                ref={ref}
-                style={{
-                    ...fishStyleFour,
-                    x,
-                    y,
-                    transform: isFlipped ? "scaleX(-1)" : "none",
-                }}
-            >
-                <img
-                    src="/yellow-fish.gif"
-                    alt="Yellow fish"
-                    className={"w-full h-full" + " " + (!isFlipped ? " -scale-x-100" : "")}
-                />
-            </motion.div >)
+const fishSources = [
+  "/pink-fish.gif",
+  "/purple-fish.gif",
+  "/red-fish.gif",
+  "/yellow-fish.gif",
+  "/red2-fish.gif",
+];
+
+export default function Drag({
+  pondRef,
+  fishChoice,
+  xOffset = 0,
+  yOffset = 0,
+}) {
+  const fishRef = useRef(null);
+
+  const { x, y, isFlipped } = useRandomWalker(
+    fishRef,
+    pondRef,
+    xOffset,
+    yOffset
+  );
+
+  return (
+    <motion.div
+      ref={fishRef}
+      style={{
+        ...fishStyle,
+        x,
+        y,
+      }}
+    >
+      <img
+        src={fishSources[fishChoice]}
+        alt="fish"
+        className={" w-full h-full" + (!isFlipped ? " -scale-x-100" : "")}
+      />
+    </motion.div>
+  );
+}
+
+function createSpringConfig() {
+  return {
+    damping: 20 + 30 * Math.random(),
+    stiffness: 10 + 15 * Math.random(),
+    restDelta: 0.001,
+  };
+}
+
+
+function useRandomWalker(fishRef, pondRef, xOffset, yOffset) {
+  const xPoint = useMotionValue(0);
+  const yPoint = useMotionValue(0);
+
+  const [springConfig] = useState(() => createSpringConfig());
+  const x = useSpring(xPoint, springConfig);
+  const y = useSpring(yPoint, springConfig);
+
+  const [isFlipped, setIsFlipped] = useState(false);
+  const intervalRef = useRef(null);
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(value, max));
+  }
+
+  function moveToRandomPoint() {
+    if (!fishRef.current || !pondRef.current) return;
+
+    const fishEl = fishRef.current;
+    const pondEl = pondRef.current;
+
+    const pondRect = pondEl.getBoundingClientRect();
+    const fishWidth = fishEl.offsetWidth;
+    const fishHeight = fishEl.offsetHeight;
+
+    const pondWidth = pondEl.offsetWidth;
+    const pondHeight = pondEl.offsetHeight;
+
+    const maxX = pondWidth - fishWidth;
+    const maxY = pondHeight - fishHeight;
+
+    const randX = Math.random() * (maxX > 0 ? maxX : 0);
+    const randY = Math.random() * (maxY > 0 ? maxY : 0);
+
+    const currentX = x.get();
+    setIsFlipped(randX > currentX);
+
+    xPoint.set(randX);
+    yPoint.set(randY);
+  }
+
+  useEffect(() => {
+    if (fishRef.current && pondRef.current) {
+      xPoint.set(xOffset);
+      yPoint.set(yOffset);
     }
+  }, []);
+
+  useEffect(() => {
+    moveToRandomPoint(); 
+    intervalRef.current = setInterval(moveToRandomPoint, 4000);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!fishRef.current || !pondRef.current) return;
+
+    const fishEl = fishRef.current;
+    const pondEl = pondRef.current;
+
+    const pondWidth = pondEl.offsetWidth;
+    const pondHeight = pondEl.offsetHeight;
+    const fishWidth = fishEl.offsetWidth;
+    const fishHeight = fishEl.offsetHeight;
+
+    const maxX = pondWidth - fishWidth;
+    const maxY = pondHeight - fishHeight;
+
+    const unsubX = x.onChange((latestX) => {
+      if (latestX < 0) {
+        x.set(0);
+        xPoint.set(0);
+      } else if (latestX > maxX) {
+        x.set(maxX);
+        xPoint.set(maxX);
+      }
+    });
+
+    const unsubY = y.onChange((latestY) => {
+      if (latestY < 0) {
+        y.set(0);
+        yPoint.set(0);
+      } else if (latestY > maxY) {
+        y.set(maxY);
+        yPoint.set(maxY);
+      }
+    });
+
+    return () => {
+      unsubX();
+      unsubY();
+    };
+  }, [x, y, xPoint, yPoint, fishRef, pondRef]);
+
+  return { x, y, isFlipped };
 }
 
-
-export function useFollowPointer({ref, fishNum}) {
-    const initialX = Math.random() * window.innerWidth
-    const initialY = Math.random() * window.innerHeight
-    const xPoint = useMotionValue(initialX)
-    const yPoint = useMotionValue(initialY)
-    
-    const fishParams = useRef({
-        speed: 0.2 + Math.random() * 0.3,
-        amplitude: window.innerWidth * 0.4,    // Make amplitude relative to window width
-        verticalRange: 50 + Math.random() * 50,
-        offset: Math.random() * Math.PI * 2,
-        center: Math.random() * window.innerWidth,  // Random center point for each fish
-        spring: {
-            damping: 20 + Math.random() * 20,
-            stiffness: 5 + Math.random() * 15,
-            restDelta: 1
-        }
-    }).current;
-
-    const x = useSpring(xPoint, fishParams.spring)
-    const y = useSpring(yPoint, fishParams.spring)
-    
-    const [isFlipped, setIsFlipped] = useState(false)
-
-    useEffect(() => {
-        if (!ref.current) return
-
-        let lastX = initialX;
-        
-        const swim = () => {
-            const time = Date.now() * 0.001 * fishParams.speed;
-            
-            // Calculate new position with fish's own center point
-            const newX = Math.sin(time + fishParams.offset) * fishParams.amplitude + fishParams.center;
-            const newY = Math.cos(time * 0.5) * fishParams.verticalRange + initialY;
-            
-            // Update position
-            xPoint.set(newX);
-            yPoint.set(newY);
-            
-            // Update flip based on movement direction
-            if (newX < lastX) {
-                setIsFlipped(true);
-            } else {
-                setIsFlipped(false);
-            }
-            
-            lastX = newX;
-            
-            requestAnimationFrame(swim);
-        };
-
-        const animation = requestAnimationFrame(swim);
-        
-        return () => cancelAnimationFrame(animation);
-    }, []);
-
-    return { x, y, isFlipped }
-}
-/**
- * ==============   Styles   ================
- */
-
-const fishStyleZero = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
-
-const fishStyleOne = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
-const fishStyleTwo = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
-const fishStyleThree = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
-
-const fishStyleFour = {
-    width: 100,
-    height: 100,
-    position: "absolute",
-}
+const fishStyle = {
+  width: 100,
+  height: 100,
+  position: "absolute",
+};
