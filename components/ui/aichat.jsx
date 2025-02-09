@@ -25,7 +25,7 @@ const AIChatBox = ({ currentMode, response, showResponse, setResponse, setShowRe
                 let data = await checkCache.json()
                 console.log(data.result)
                 if(data.result){
-                    setResponse(data.result);
+                    setResponse(data.response[0].metadata.response);
                 }else{
                     const response = await fetch("/api/get_ai_response", {
                         headers: {
